@@ -32,8 +32,16 @@ $button.Add_Click(
 
 
 
-
-
+$buttonOkay = New-Object System.Windows.Forms.Button
+$buttonOkay.location = New-Object System.Drawing.Size(300,600)
+$buttonOkay.Size = New-Object System.Drawing.Size(120,23)
+$buttonOkay.Text = "Okay"
+$form.Controls.Add($buttonOkay)
+$buttonOkay.Add_Click(
+    {
+        $form.Close()
+    }
+)
 
 $buttonCancel = New-Object System.Windows.Forms.Button
 $buttonCancel.location = New-Object System.Drawing.Size(500,600)
