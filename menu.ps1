@@ -6,7 +6,7 @@
 
 Function Get-DataBeacon
 {
-    # Log Location Text
+    # Log Location label
     $logLabel = New-Object System.Windows.Forms.Label
     $logLabel.text = "Log Location"
     $logLabel.Location = New-Object System.Drawing.Point(15,50)
@@ -14,6 +14,14 @@ Function Get-DataBeacon
     $logLabel.Font = $textFont
     #$logLabel.TabIndex = $selectedTab.TabIndex
     $scriptBeacon.Controls.Add($logLabel)
+
+    $testText = New-Object System.Windows.Forms.TextBox
+    $testText.Location = New-Object System.Drawing.Point(130,50)
+    $testText.text = " "
+    $testText.Size = New-Object System.Drawing.Size(550,40)
+    $testText.ReadOnly = $true
+    $testText.Font = $textFont
+    $scriptBeacon.Controls.Add($testText)
 
     # Browse Button
     $buttonBrowse = New-Object System.Windows.Forms.Button
@@ -47,7 +55,7 @@ Function Get-DataBeacon
 
 Function Get-DataRegistry
 {
-    # Log Location Text
+    # Log Location label
     $logLabel = New-Object System.Windows.Forms.Label
     $logLabel.text = "Log Location"
     $logLabel.Location = New-Object System.Drawing.Point(15,50)
