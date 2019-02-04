@@ -1,7 +1,4 @@
-﻿. .\beacon.ps1
-. .\registry.ps1
-
-# Debugging reference!
+﻿# Debugging reference!
 #[System.Windows.Forms.MessageBox]::Show("Exists")
 
 Function Get-DataBeacon
@@ -15,13 +12,12 @@ Function Get-DataBeacon
     #$logLabel.TabIndex = $selectedTab.TabIndex
     $scriptBeacon.Controls.Add($logLabel)
 
-    $testText = New-Object System.Windows.Forms.TextBox
-    $testText.Location = New-Object System.Drawing.Point(130,50)
-    $testText.text = " "
-    $testText.Size = New-Object System.Drawing.Size(550,40)
-    $testText.ReadOnly = $true
-    $testText.Font = $textFont
-    $scriptBeacon.Controls.Add($testText)
+    $script:textLogBeacon = New-Object System.Windows.Forms.TextBox
+    $textLogBeacon.Location = New-Object System.Drawing.Point(130,50)
+    $textLogBeacon.Size = New-Object System.Drawing.Size(550,40)
+    $textLogBeacon.ReadOnly = $true
+    $textLogBeacon.Font = $textFont
+    $scriptBeacon.Controls.Add($textLogBeacon)
 
     # Browse Button
     $buttonBrowse = New-Object System.Windows.Forms.Button
@@ -35,17 +31,11 @@ Function Get-DataBeacon
         {
             $browser = New-Object System.Windows.Forms.FolderBrowserDialog
             $browser.ShowDialog()
-                    
-            $textFileLocation = New-Object System.Windows.Forms.TextBox
-            $textFileLocation.text = "$($browser.SelectedPath)\beaconlog.txt"
-            $textFileLocation.Location = New-Object System.Drawing.Point(130, 50)
-            $textFileLocation.Size = New-Object System.Drawing.Size(550,40)
-            $textFileLocation.ReadOnly = $true
-            $textFileLocation.Font = $textFont
-            $scriptBeacon.Controls.Add($textFileLocation)
-            $script:logLocationBeacon = $textFileLocation.Text
             
-            if (!(Test-Path $logLocationBeacon))
+            $textLogBeacon.text = "$($browser.SelectedPath)\beaconlog.txt"
+            $script:logLocation = $textLogBeacon.Text
+
+            if (!(Test-Path $logLocation))
             {
                 New-Item -Path $browser.SelectedPath -Name beaconlog.txt
             }
@@ -64,6 +54,13 @@ Function Get-DataRegistry
     #$logLabel.TabIndex = $selectedTab.TabIndex
     $scriptRegistry.Controls.Add($logLabel)
 
+    $script:textLogReg = New-Object System.Windows.Forms.TextBox
+    $textLogReg.Location = New-Object System.Drawing.Point(130,50)
+    $textLogReg.Size = New-Object System.Drawing.Size(550,40)
+    $textLogReg.ReadOnly = $true
+    $textLogReg.Font = $textFont
+    $scriptRegistry.Controls.Add($textLogReg)
+
     # Browse Button
     $buttonBrowse = New-Object System.Windows.Forms.Button
     $buttonBrowse.location = New-Object System.Drawing.Size(700,50)
@@ -76,17 +73,11 @@ Function Get-DataRegistry
         {
             $browser = New-Object System.Windows.Forms.FolderBrowserDialog
             $browser.ShowDialog()
-                    
-            $textFileLocation = New-Object System.Windows.Forms.TextBox
-            $textFileLocation.text = "$($browser.SelectedPath)\registrylog.txt"
-            $textFileLocation.Location = New-Object System.Drawing.Point(130, 50)
-            $textFileLocation.Size = New-Object System.Drawing.Size(550,40)
-            $textFileLocation.ReadOnly = $true
-            $textFileLocation.Font = $textFont
-            $scriptRegistry.Controls.Add($textFileLocation)
-            $script:logLocationReg = $textFileLocation.Text
+            
+            $textLogReg.text = "$($browser.SelectedPath)\registrylog.txt"
+            $script:logLocation = $textLogReg.Text
 
-            if (!(Test-Path $logLocationReg))
+            if (!(Test-Path $logLocation))
             {
                 New-Item -Path $browser.SelectedPath -Name registrylog.txt
             }
@@ -241,7 +232,7 @@ Function New-Form
     $scriptBeacon.Controls.Add($buttonIPUpdate)
     $buttonIPUpdate.Add_Click(
         {
-            $script:ipaddress = $textIP.Text
+            $global:ipaddress = $textIP.Text
             $messageboxConfirm0 = [System.Windows.Forms.MessageBox]::Show("IP is now $($ipaddress). Is this right?","IP Address","YesNo")
             switch ($messageboxConfirm0)
             {
@@ -282,7 +273,7 @@ Function New-Form
     $scriptBeacon.Controls.Add($buttonPingUpdate)
     $buttonPingUpdate.Add_Click(
         {
-            $script:pings = $textPings.Text
+            $global:pings = $textPings.Text
             [System.Windows.Forms.MessageBox]::Show("Max tries is set!","Confirmed","OK")
         }
     )
@@ -329,10 +320,10 @@ Function New-Form
     $buttonOkay.Add_Click(
         {
             Get-Date | Out-File -FilePath $logLocation -Append
-            $break = "###########################################"
-            $break | Out-File -FilePath $logLocation -Append
-            $ipaddress | Out-File -FilePath $logLocation -Append
-            $pings | Out-File -FilePath $logLocation -Append
+            "###########################################" | Out-File -FilePath $logLocation -Append
+            "'Bad' IP is: $($ipaddress)" | Out-File -FilePath $logLocation -Append
+            "Script will attemtp to ping $($pings) times." | Out-File -FilePath $logLocation -Append
+            .\beacon.ps1
         }
     )
 
