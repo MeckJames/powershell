@@ -1,4 +1,3 @@
-
 Add-Type -assembly System.Windows.Forms
 
 #title for the winform
@@ -23,7 +22,7 @@ $form1.StartPosition = [System.Windows.Forms.FormStartPosition]::CenterScreen
 # create label
 $label1 = New-Object system.Windows.Forms.Label
 $label1.Text = "not started"
-$label1.Left=5
+$label1.Left=10
 $label1.Top= 10
 $label1.Width= $width - 20
 #adjusted height to accommodate progress bar
@@ -43,7 +42,7 @@ $System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Width = $width - 40
 $System_Drawing_Size.Height = 20
 $progressBar1.Size = $System_Drawing_Size
-$progressBar1.Left = 5
+$progressBar1.Left = 10
 $progressBar1.Top = 40
 $form1.Controls.Add($progressBar1)
 
