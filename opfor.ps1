@@ -6,14 +6,14 @@ Function Get-DataBeacon
     # Log Location label
     $logLabel = New-Object System.Windows.Forms.Label
     $logLabel.text = "Log Location"
-    $logLabel.Location = New-Object System.Drawing.Point(15,50)
+    $logLabel.Location = New-Object System.Drawing.Point(200,50)
     $logLabel.AutoSize = $true
-    $logLabel.Font = $textFont
+    $logLabel.Font = $labelFont
     #$logLabel.TabIndex = $selectedTab.TabIndex
     $scriptBeacon.Controls.Add($logLabel)
 
     $script:textLogBeacon = New-Object System.Windows.Forms.TextBox
-    $textLogBeacon.Location = New-Object System.Drawing.Point(130,50)
+    $textLogBeacon.Location = New-Object System.Drawing.Point(320,45)
     $textLogBeacon.Size = New-Object System.Drawing.Size(550,40)
     $textLogBeacon.ReadOnly = $true
     $textLogBeacon.Font = $textFont
@@ -21,7 +21,7 @@ Function Get-DataBeacon
 
     # Browse Button
     $buttonBrowse = New-Object System.Windows.Forms.Button
-    $buttonBrowse.location = New-Object System.Drawing.Size(700,50)
+    $buttonBrowse.location = New-Object System.Drawing.Point(890,47)
     $buttonBrowse.Size = $buttonSize
     $buttonBrowse.Text = "Browse"
     $buttonBrowse.Font = $buttonFont
@@ -48,14 +48,14 @@ Function Get-DataRegistry
     # Log Location label
     $logLabel = New-Object System.Windows.Forms.Label
     $logLabel.text = "Log Location"
-    $logLabel.Location = New-Object System.Drawing.Point(15,50)
+    $logLabel.Location = New-Object System.Drawing.Point(200,50)
     $logLabel.AutoSize = $true
-    $logLabel.Font = $textFont
+    $logLabel.Font = $labelFont
     #$logLabel.TabIndex = $selectedTab.TabIndex
     $scriptRegistry.Controls.Add($logLabel)
 
     $script:textLogReg = New-Object System.Windows.Forms.TextBox
-    $textLogReg.Location = New-Object System.Drawing.Point(130,50)
+    $textLogReg.Location = New-Object System.Drawing.Point(320,45)
     $textLogReg.Size = New-Object System.Drawing.Size(550,40)
     $textLogReg.ReadOnly = $true
     $textLogReg.Font = $textFont
@@ -63,7 +63,7 @@ Function Get-DataRegistry
 
     # Browse Button
     $buttonBrowse = New-Object System.Windows.Forms.Button
-    $buttonBrowse.location = New-Object System.Drawing.Size(700,50)
+    $buttonBrowse.location = New-Object System.Drawing.Point(890,47)
     $buttonBrowse.Size = $buttonSize
     $buttonBrowse.Text = "Browse"
     $buttonBrowse.Font = $buttonFont
@@ -123,6 +123,12 @@ Function New-Form
         $labelSetupRegistry = New-Object System.Windows.Forms.Label
         $textSetupRegistry = New-Object System.Windows.Forms.TextBox
         $buttonSetupUpdateRegistry = New-Object System.Windows.Forms.Button
+        $labelUserTarget = New-Object System.Windows.Forms.Label
+        $textUserTarget = New-Object System.Windows.Forms.TextBox
+        $buttonUserTarget = New-Object System.Windows.Forms.Button
+        $labelRootHive = New-Object System.Windows.Forms.Label
+        $textRootHive = New-Object System.Windows.Forms.TextBox
+        $buttonRootHive = New-Object System.Windows.Forms.Button
         $buttonOkay = New-Object System.Windows.Forms.Button
         $buttonCancel = New-Object System.Windows.Forms.Button
 
@@ -132,6 +138,7 @@ Function New-Form
         # Setting up fonts for specific pieces
         $mainFont = New-Object System.Drawing.Font("Segoe UI",12,[System.Drawing.FontStyle]::Regular)
         $buttonFont = New-Object System.Drawing.Font("Segoe UI",12,[System.Drawing.FontStyle]::Regular)
+        $labelFont = New-Object System.Drawing.Font("Segoe UI",12,[System.Drawing.FontStyle]([System.Drawing.FontStyle]::Italic -bor [System.Drawing.FontStyle]::Bold))
         $textFont = New-Object System.Drawing.Font("Segoe UI",12,[System.Drawing.FontStyle]::Italic)
         $resultFont = New-Object System.Drawing.Font("Segoe UI",12,[System.Drawing.FontStyle]::Bold)
         # Font styles are Regular, Bold, Italic, Underling, Strikeout
@@ -140,7 +147,7 @@ Function New-Form
         $form.Text = "Exercise Script"
         $form.Name = "form"
         $system_drawing_size = New-Object System.Drawing.Size
-        $system_drawing_size.Width = 900
+        $system_drawing_size.Width = 1280
         $system_drawing_size.Height = 720
         $form.ClientSize = $system_drawing_size
         $form.WindowState = "Normal"
@@ -163,7 +170,7 @@ Function New-Form
     # Tab Control
     $tabControl.Location = New-Object System.Drawing.Point(0,0)
     $tabControl.Name = "tabControl"
-    $tabControl.Size = New-Object System.Drawing.Size(900,650)
+    $tabControl.Size = New-Object System.Drawing.Size(1280,680)
     $tabControl.ForeColor = "Black"
     $tabControl.Add_SelectedIndexChanged({
 
@@ -222,16 +229,17 @@ Function New-Form
     $tabControl.Controls.Add($scriptBeacon)
 
     Get-DataBeacon
+
     # IP Address Label
     $labelIP.Text = "What is the Desitnation IP?"
-    $labelIP.Location = New-Object System.Drawing.Size(15,100)
+    $labelIP.Location = New-Object System.Drawing.Size(340,103)
     $labelIP.AutoSize = $True
-    $labelIP.Font = $textFont
+    $labelIP.Font = $labelFont
     $scriptBeacon.Controls.Add($labelIP)
 
     # IP Address for Beacon Script
     $textIP.text = "000.000.000.000"
-    $textIP.Location = New-Object System.Drawing.Point(230,100)
+    $textIP.Location = New-Object System.Drawing.Point(560,100)
     $textIP.Size = New-Object System.Drawing.Size(150,40)
     $textIP.Font = $textFont
     $textIP.Add_KeyDown({
@@ -247,7 +255,7 @@ Function New-Form
     $scriptBeacon.Controls.Add($textIP)
 
     # IP Address update Button
-    $buttonIPUpdate.location = New-Object System.Drawing.Size(700,100)
+    $buttonIPUpdate.location = New-Object System.Drawing.Size(730,103)
     $buttonIPUpdate.Size = $buttonSize
     $buttonIPUpdate.Text = "Set"
     $buttonIPUpdate.Font = $buttonFont
@@ -275,20 +283,20 @@ Function New-Form
 
     # How many times it attempts to "reach out"
     $labelPings.Text = "How many pings?"
-    $labelPings.Location = New-Object System.Drawing.Size(15,150)
+    $labelPings.Location = New-Object System.Drawing.Size(405,150)
     $labelPings.AutoSize = $True
-    $labelPings.Font = $textFont
+    $labelPings.Font = $labelFont
     $scriptBeacon.Controls.Add($labelPings)
 
     # Get input from User
     $textPings.Text = "100"
-    $textPings.Location = New-Object System.Drawing.Point(230,150)
+    $textPings.Location = New-Object System.Drawing.Point(560,150)
     $textPings.Size = New-Object System.Drawing.Size(75,40)
     $textPings.Font = $textFont
     $scriptBeacon.Controls.Add($textPings)
 
     # Ping Number update Button
-    $buttonPingUpdate.location = New-Object System.Drawing.Size(700,150)
+    $buttonPingUpdate.location = New-Object System.Drawing.Size(730,153)
     $buttonPingUpdate.Size = $buttonSize
     $buttonPingUpdate.Text = "Set"
     $buttonPingUpdate.Font = $buttonFont
@@ -314,22 +322,22 @@ Function New-Form
 
     Get-DataRegistry
 
-    # IP Address Label
-    $labelIPRegistry.Text = "What is the Desitnation IP?"
-    $labelIPRegistry.Location = New-Object System.Drawing.Size(15,100)
+    # Target IP Label
+    $labelIPRegistry.Text = "What is the IP of the target device?"
+    $labelIPRegistry.Location = New-Object System.Drawing.Size(280,103)
     $labelIPRegistry.AutoSize = $True
-    $labelIPRegistry.Font = $textFont
+    $labelIPRegistry.Font = $labelFont
     $scriptRegistry.Controls.Add($labelIPRegistry)
 
-    # IP Address for Beacon Script
+    # Target IP for Registry Script
     $textIPRegistry.text = "000.000.000.000"
-    $textIPRegistry.Location = New-Object System.Drawing.Point(230,100)
+    $textIPRegistry.Location = New-Object System.Drawing.Point(560,100)
     $textIPRegistry.Size = New-Object System.Drawing.Size(150,40)
     $textIPRegistry.Font = $textFont
     $scriptRegistry.Controls.Add($textIPRegistry)
 
-    # IP Address update Button
-    $buttonIPUpdateRegistry.location = New-Object System.Drawing.Size(700,100)
+    # Target IP update Button
+    $buttonIPUpdateRegistry.location = New-Object System.Drawing.Size(730,103)
     $buttonIPUpdateRegistry.Size = $buttonSize
     $buttonIPUpdateRegistry.Text = "Set"
     $buttonIPUpdateRegistry.Font = $buttonFont
@@ -355,36 +363,62 @@ Function New-Form
         }
     )
 
-    $labelSetupRegistry = New-Object System.Windows.Forms.Label
-        $textSetupRegistry = New-Object System.Windows.Forms.TextBox
-        $buttonSetupUpdateRegistry = New-Object System.Windows.Forms.Button
+    # Target User label
+    $labelUserTarget.Text = "Who is the 'Bad Guy'?"
+    $labelUserTarget.Location = New-Object System.Drawing.Point(280,153)
+    $labelUserTarget.AutoSize = $True
+    $labelUserTarget.Font = $labelFont
+    $scriptRegistry.Controls.Add($labelUserTarget)
 
-    # How many times it attempts to "reach out"
-    $labelSetupRegistry.Text = "How many pings?"
-    $labelSetupRegistry.Location = New-Object System.Drawing.Size(15,150)
-    $labelSetupRegistry.AutoSize = $True
-    $labelSetupRegistry.Font = $textFont
-    $scriptRegistry.Controls.Add($labelSetupRegistry)
+    # Target User textbox
+    $textUserTarget.Text = "example: bad.guy.adm"
+    $textUserTarget.Location = New-Object System.Drawing.Point(460,150)
+    $textUserTarget.Size = New-Object System.Drawing.Size(250,40)
+    $textUserTarget.Font = $textFont
+    $scriptRegistry.Controls.Add($textUserTarget)
 
-    # Get input from User
-    $textSetupRegistry.Text = "100"
-    $textSetupRegistry.Location = New-Object System.Drawing.Point(230,150)
-    $textSetupRegistry.Size = New-Object System.Drawing.Size(75,40)
-    $textSetupRegistry.Font = $textFont
-    $scriptRegistry.Controls.Add($textSetupRegistry)
-
-    # Ping Number update Button
-    $buttonSetupUpdateRegistry.location = New-Object System.Drawing.Size(700,150)
-    $buttonSetupUpdateRegistry.Size = $buttonSize
-    $buttonSetupUpdateRegistry.Text = "Set"
-    $buttonSetupUpdateRegistry.Font = $buttonFont
-    $scriptRegistry.Controls.Add($buttonSetupUpdateRegistry)
-    $buttonSetupUpdateRegistry.Add_Click(
+    # Target User button
+    $buttonUserTarget.Text = "Set"
+    $buttonUserTarget.Location = New-Object System.Drawing.Point(730,153)
+    $buttonUserTarget.Size = $buttonSize
+    $buttonUserTarget.Font = $buttonFont
+    $scriptRegistry.Controls.Add($buttonUserTarget)
+    $buttonUserTarget.Add_Click(
         {
-            $global:pings = $textPings.Text
-            [System.Windows.Forms.MessageBox]::Show("Max tries is set!","Confirmed","OK")
+
+            $global:userTarget = $textUserTarget.Text
+            [System.Windows.Forms.MessageBox]::Show("$($userTarget) is the bad guy.","Confirmed","OK")
         }
     )
+
+    # Edit Root Registry Hive Label
+    $labelRootHive.Text = "Change the root registry hive?"
+    $labelRootHive.Location = New-Object System.Drawing.Point(220,203)
+    $labelRootHive.AutoSize = $True
+    $labelRootHive.Font = $labelFont
+    $scriptRegistry.Controls.Add($labelRootHive)
+
+    # Edit Root Registry Hive textbox
+    $textRootHive.Text = "example: McAfeee"
+    $textRootHive.Location = New-Object System.Drawing.Point(460,200)
+    $textRootHive.Size = New-Object System.Drawing.Size(250,40)
+    $textRootHive.Font = $textFont
+    $scriptRegistry.Controls.Add($textRootHive)
+
+    # Edit Root Registry Hive button
+    $buttonRootHive.Text = "Set"
+    $buttonRootHive.Location = New-Object System.Drawing.Point(730,203)
+    $buttonRootHive.Size = $buttonSize
+    $buttonRootHive.Font = $buttonFont
+    $scriptRegistry.Controls.Add($buttonRootHive)
+    $buttonRootHive.Add_Click(
+        {
+
+            $global:rootHive = $textRootHive.Text
+            [System.Windows.Forms.MessageBox]::Show("The Root Registry Hive is $($rootHive).","Confirmed","OK")
+        }
+    )
+
 
     ##########################################################################################
     #
@@ -405,7 +439,7 @@ Function New-Form
     ##########################################################################################
 
     # Okay Button
-    $buttonOkay.location = New-Object System.Drawing.Size(300,690)
+    $buttonOkay.location = New-Object System.Drawing.Size(480,690)
     $buttonOkay.Size = $buttonSize
     $buttonOkay.Text = "Okay"
     $buttonOkay.Font = $buttonFont
@@ -440,9 +474,9 @@ Function New-Form
     )
 
     # Cancel Button
-    $buttonCancel.location = New-Object System.Drawing.Size(500,690)
+    $buttonCancel.location = New-Object System.Drawing.Size(680,690)
     $buttonCancel.Size = $buttonSize
-    $buttonCancel.Text = "Close"
+    $buttonCancel.Text = "Cancel"
     $buttonCancel.Font = $buttonFont
     $form.Controls.Add($buttonCancel)
     $buttonCancel.Add_Click(
@@ -454,8 +488,5 @@ Function New-Form
     $form.ShowDialog() | Out-Null
 }
 
-
-#$BUTTONNAME.Add_KeyDown({if ($_.KeyCode -eq "Enter") 
-    #{**FUNCTION HERE***}})
 
 New-Form
