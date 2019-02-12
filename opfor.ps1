@@ -120,9 +120,6 @@ Function New-Form
         $labelIPRegistry = New-Object System.Windows.Forms.Label
         $textIPRegistry = New-Object System.Windows.Forms.TextBox
         $buttonIPUpdateRegistry = New-Object System.Windows.Forms.Button
-        $labelSetupRegistry = New-Object System.Windows.Forms.Label
-        $textSetupRegistry = New-Object System.Windows.Forms.TextBox
-        $buttonSetupUpdateRegistry = New-Object System.Windows.Forms.Button
         $labelUserTarget = New-Object System.Windows.Forms.Label
         $textUserTarget = New-Object System.Windows.Forms.TextBox
         $buttonUserTarget = New-Object System.Windows.Forms.Button
@@ -457,6 +454,7 @@ Function New-Form
                 "Script will attemtp to ping $($pings) times." | Out-File -FilePath $logLocation -Append
                 ;"";""| Out-File -FilePath $logLocation -Append
                 .\beacon.ps1
+                
 
             }
             elseif ($selectedTab.TabIndex -eq 2)
@@ -486,7 +484,7 @@ Function New-Form
     )
 
     $form.ShowDialog() | Out-Null
+    $form.Focus() | Out-Null
 }
-
 
 New-Form
