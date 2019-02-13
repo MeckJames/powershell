@@ -15,7 +15,7 @@ Function New-Form
 
     ##########################################################################################
     #
-    #   Begin section for declaring sections of the form
+    #   Section for declaring sections of the form
     #
     ##########################################################################################
 
@@ -36,6 +36,7 @@ Function New-Form
         $labelPings = New-Object System.Windows.Forms.Label
         $textPings = New-Object System.Windows.Forms.TextBox
         $buttonPingUpdate = New-Object System.Windows.Forms.Button
+        $buttonRunBeacon = New-Object System.Windows.Forms.Button
         $labelIPRegistry = New-Object System.Windows.Forms.Label
         $textIPRegistry = New-Object System.Windows.Forms.TextBox
         $buttonIPUpdateRegistry = New-Object System.Windows.Forms.Button
@@ -49,6 +50,8 @@ Function New-Form
         $labelRootHive = New-Object System.Windows.Forms.Label
         $textRootHive = New-Object System.Windows.Forms.TextBox
         $buttonRootHive = New-Object System.Windows.Forms.Button
+        $buttonRunReg = New-Object System.Windows.Forms.Button
+        $buttonSetupReg = New-Object System.Windows.Forms.Button
         $buttonOkay = New-Object System.Windows.Forms.Button
         $buttonCancel = New-Object System.Windows.Forms.Button
 
@@ -60,7 +63,7 @@ Function New-Form
         $buttonFont = New-Object System.Drawing.Font("Segoe UI",12,[System.Drawing.FontStyle]::Regular)
         $labelFont = New-Object System.Drawing.Font("Segoe UI",12,[System.Drawing.FontStyle]([System.Drawing.FontStyle]::Italic -bor [System.Drawing.FontStyle]::Bold))
         $textFont = New-Object System.Drawing.Font("Segoe UI",12,[System.Drawing.FontStyle]::Italic)
-        $resultFont = New-Object System.Drawing.Font("Segoe UI",12,[System.Drawing.FontStyle]::Bold)
+        $sectionFont = New-Object System.Drawing.Font("Segoe UI",18,[System.Drawing.FontStyle]::Regular)
         # Font styles are Regular, Bold, Italic, Underling, Strikeout
 
         # Main Form
@@ -94,7 +97,7 @@ Function New-Form
     $tabControl.ForeColor = "Black"
     $tabControl.Add_SelectedIndexChanged({
 
-        $selectedTab = $tabControl.SelectedTab
+        $script:selectedTab = $tabControl.SelectedTab
 
     })
 
@@ -179,7 +182,7 @@ Function New-Form
             $selectedFolder = $browser.BrowseForFolder(0, "Select Folder", 0, "$ENV:USERPROFILE")
             
             $textLogBeacon.text = "$($selectedFolder.Self.Path)\beaconlog.txt"
-            $logLocation = $textLogBeacon.Text
+            $script:logLocation = $textLogBeacon.Text
 
             if (!(Test-Path $logLocation))
             {
@@ -220,7 +223,7 @@ Function New-Form
     $scriptBeacon.Controls.Add($buttonIPUpdate)
     $buttonIPUpdate.Add_Click(
         {
-            $ipaddress = $textIP.Text
+            $script:ipaddress = $textIP.Text
             $messageboxConfirm0 = [System.Windows.Forms.MessageBox]::Show("IP is now $($ipaddress). Is this right?","IP Address","YesNo")
             switch ($messageboxConfirm0)
             {
@@ -261,11 +264,35 @@ Function New-Form
     $scriptBeacon.Controls.Add($buttonPingUpdate)
     $buttonPingUpdate.Add_Click(
         {
-            $pings = $textPings.Text
+            $script:pings = $textPings.Text
             [System.Windows.Forms.MessageBox]::Show("Max tries is set!","Confirmed","OK")
         }
     )
 
+    # Run script
+    $buttonRunBeacon.Location = New-Object System.Drawing.Point(580,600)
+    $buttonRunBeacon.Size = $buttonSize
+    $buttonRunBeacon.Text = "Run"
+    $buttonRunBeacon.Font = $buttonFont
+    $scriptBeacon.Controls.Add($buttonRunBeacon)
+    $buttonRunBeacon.Add_Click(
+        {
+
+            Get-Date -Format F | Out-File -FilePath $logLocation -Append
+            "###########################################################################################" | Out-File -FilePath $logLocation -Append
+            ;"#";"#"| Out-File -FilePath $logLocation -Append
+            "#                                        INFORMATION" | Out-File -FilePath $logLocation -Append
+            "#" | Out-File -FilePath $logLocation -Append
+            "#    'Bad' IP is: $($ipaddress)" | Out-File -FilePath $logLocation -Append
+            ;"#"| Out-File -FilePath $logLocation -Append
+            "#    Script will attempt to ping $($pings) times." | Out-File -FilePath $logLocation -Append
+            ;"#";"#"| Out-File -FilePath $logLocation -Append
+            "###########################################################################################" | Out-File -FilePath $logLocation -Append
+
+            Run-Beacon -ipaddress $ipaddress -ping $pings -loglocation $logLocation
+
+        }
+    )
     ##########################################################################################
     #
     #   Begin section for Registry Script Tab
@@ -309,7 +336,7 @@ Function New-Form
            
             
             $textLogReg.text = "$($selectedFolder.Self.Path)\registrylog.txt"
-            $logLocation = $textLogReg.Text
+            $script:logLocation = $textLogReg.Text
 
             if (!(Test-Path $logLocation))
             {
@@ -369,9 +396,9 @@ Function New-Form
 
     # Label for defining section for setup
     $labelRegSetup.Text = "Setup"
-    $labelRegSetup.Location = New-Object System.Drawing.Point(570,155)
-    $labelRegSetup.AutoSize = $True
-    $labelRegSetup.Font = New-Object System.Drawing.Font("Segoe UI",18,[System.Drawing.FontStyle]::Regular)
+    $labelRegSetup.Location = New-Object System.Drawing.Point(610,155)
+    $labelRegSetup.Size = New-Object System.Drawing.Size(90,30)
+    $labelRegSetup.Font = $sectionFont
     $scriptRegistry.Controls.Add($labelRegSetup)
 
     # Target User label
@@ -430,8 +457,31 @@ Function New-Form
         }
     )
 
+    # Setup Button
+    $buttonSetupReg.Location = New-Object System.Drawing.Point(580,300)
+    $buttonSetupReg.Size = $buttonSize
+    $buttonSetupReg.Text = "Setup"
+    $buttonSetupReg.Font = $buttonFont
+    $scriptRegistry.Controls.Add($buttonSetupReg)
+    $buttonSetupReg.Add_Click(
+        {
+
+                Get-Date -Format F | Out-File -FilePath $logLocation -Append
+                "###########################################################################################" | Out-File -FilePath $logLocation -Append
+                ;"#";"#"| Out-File -FilePath $logLocation -Append
+                "#                                        INFORMATION" | Out-File -FilePath $logLocation -Append
+                "#" | Out-File -FilePath $logLocation -Append
+                ;"#"| Out-File -FilePath $logLocation -Append
+                ;"#";"#"| Out-File -FilePath $logLocation -Append
+                "###########################################################################################" | Out-File -FilePath $logLocation -Append
+    
+                Set-Registry -add -hive $rootHive
+
+        }
+    )
+
     # page break
-    $labelExecBreak.Location = New-Object System.Drawing.Point(0,300)
+    $labelExecBreak.Location = New-Object System.Drawing.Point(0,400)
     $labelExecBreak.Width = 1280
     $labelExecBreak.AutoSize = $false
     $labelExecBreak.Height = 2
@@ -440,10 +490,48 @@ Function New-Form
     
     # Label for defining section for setup
     $labelRegExec.Text = "Execution"
-    $labelRegExec.Location = New-Object System.Drawing.Point(555,305)
-    $labelRegExec.AutoSize = $True
-    $labelRegExec.Font = New-Object System.Drawing.Font("Segoe UI",18,[System.Drawing.FontStyle]::Regular)
+    $labelRegExec.Location = New-Object System.Drawing.Point(583,405)
+    $labelRegExec.Size = New-Object System.Drawing.Size(115,30)
+    $labelRegExec.Font = $sectionFont
     $scriptRegistry.Controls.Add($labelRegExec)
+
+    # Run script
+    $buttonRunReg.Location = New-Object System.Drawing.Point(580,600)
+    $buttonRunReg.Size = $buttonSize
+    $buttonRunReg.Text = "Run"
+    $buttonRunReg.Font = $buttonFont
+    $scriptRegistry.Controls.Add($buttonRunReg)
+    $buttonRunReg.Add_Click(
+        {
+            If (setup)
+            { 
+                Get-Date -Format F | Out-File -FilePath $logLocation -Append
+                "###########################################################################################" | Out-File -FilePath $logLocation -Append
+                ;"#";"#"| Out-File -FilePath $logLocation -Append
+                "#                                        INFORMATION" | Out-File -FilePath $logLocation -Append
+                "#" | Out-File -FilePath $logLocation -Append
+                ;"#"| Out-File -FilePath $logLocation -Append
+                ;"#";"#"| Out-File -FilePath $logLocation -Append
+                "###########################################################################################" | Out-File -FilePath $logLocation -Append
+    
+                Set-Registry -add -hive $rootHive
+                
+            }
+            elseif (execute)
+            {
+
+                Get-Date -Format F | Out-File -FilePath $logLocation -Append
+                "###########################################################################################" | Out-File -FilePath $logLocation -Append
+                ;"";""| Out-File -FilePath $logLocation -Append
+                
+                Set-Registry -hive $rootHive
+
+            }
+
+            
+
+        }
+    )
 
     ##########################################################################################
     #
@@ -463,44 +551,8 @@ Function New-Form
     #
     ##########################################################################################
 
-    # Okay Button
-    $buttonOkay.location = New-Object System.Drawing.Size(480,690)
-    $buttonOkay.Size = $buttonSize
-    $buttonOkay.Text = "Okay"
-    $buttonOkay.Font = $buttonFont
-    $form.Controls.Add($buttonOkay)
-    $buttonOkay.Add_Click(
-        {
-
-            If ($selectedTab.TabIndex -eq 1)
-            { 
-                Get-Date -Format F | Out-File -FilePath $logLocation -Append
-                "###########################################################################################" | Out-File -FilePath $logLocation -Append
-                ;"";""| Out-File -FilePath $logLocation -Append
-                "'Bad' IP is: $($ipaddress)" | Out-File -FilePath $logLocation -Append
-                ;""| Out-File -FilePath $logLocation -Append
-                "Script will attempt to ping $($pings) times." | Out-File -FilePath $logLocation -Append
-                ;"";""| Out-File -FilePath $logLocation -Append
-                Run-Beacon
-                
-
-            }
-            elseif ($selectedTab.TabIndex -eq 2)
-            {
-
-                Get-Date -Format F | Out-File -FilePath $logLocation -Append
-                "###########################################################################################" | Out-File -FilePath $logLocation -Append
-                ;"";""| Out-File -FilePath $logLocation -Append
-                
-                Set-Registry -add -hive $rootHive
-
-            }
-
-        }
-    )
-
     # Cancel Button
-    $buttonCancel.location = New-Object System.Drawing.Size(680,690)
+    $buttonCancel.location = New-Object System.Drawing.Size(580,690)
     $buttonCancel.Size = $buttonSize
     $buttonCancel.Text = "Cancel"
     $buttonCancel.Font = $buttonFont

@@ -1,5 +1,10 @@
 Function Run-Beacon
 {
+    param(
+        [int]$pings,
+        [string]$ipaddress,
+        [string]$logLocation
+    )
 
     Add-Type -assembly System.Windows.Forms
 
@@ -67,6 +72,7 @@ Function Run-Beacon
         $label1.Text = "Attempt $($count)"
         $form1.Refresh()
 
+        ;"";""| Out-File -FilePath $logLocation -Append
         "Current attmept is: $($count)" | Out-File -FilePath $logLocation -Append
         ping $ipaddress | Out-File -FilePath $logLocation -Append
 
