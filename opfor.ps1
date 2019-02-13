@@ -1,89 +1,8 @@
 ﻿# Debugging reference!
 #[System.Windows.Forms.MessageBox]::Show("Exists")
 
-Function Get-DataBeacon
-{
-    # Log Location label
-    $logLabel = New-Object System.Windows.Forms.Label
-    $logLabel.text = "Log Location"
-    $logLabel.Location = New-Object System.Drawing.Point(200,50)
-    $logLabel.AutoSize = $true
-    $logLabel.Font = $labelFont
-    #$logLabel.TabIndex = $selectedTab.TabIndex
-    $scriptBeacon.Controls.Add($logLabel)
-
-    $script:textLogBeacon = New-Object System.Windows.Forms.TextBox
-    $textLogBeacon.Location = New-Object System.Drawing.Point(320,45)
-    $textLogBeacon.Size = New-Object System.Drawing.Size(550,40)
-    $textLogBeacon.ReadOnly = $true
-    $textLogBeacon.Font = $textFont
-    $scriptBeacon.Controls.Add($textLogBeacon)
-
-    # Browse Button
-    $buttonBrowse = New-Object System.Windows.Forms.Button
-    $buttonBrowse.location = New-Object System.Drawing.Point(890,47)
-    $buttonBrowse.Size = $buttonSize
-    $buttonBrowse.Text = "Browse"
-    $buttonBrowse.Font = $buttonFont
-    #$buttonBrowse.TabIndex = $selectedTab.TabIndex
-    $scriptBeacon.Controls.Add($buttonBrowse)
-    $buttonBrowse.Add_Click(
-        {
-            $browser = New-Object System.Windows.Forms.FolderBrowserDialog
-            $browser.ShowDialog()
-            
-            $textLogBeacon.text = "$($browser.SelectedPath)\beaconlog.txt"
-            $script:logLocation = $textLogBeacon.Text
-
-            if (!(Test-Path $logLocation))
-            {
-                New-Item -Path $browser.SelectedPath -Name beaconlog.txt
-            }
-        }
-    )
-}
-
-Function Get-DataRegistry
-{
-    # Log Location label
-    $logLabel = New-Object System.Windows.Forms.Label
-    $logLabel.text = "Log Location"
-    $logLabel.Location = New-Object System.Drawing.Point(200,50)
-    $logLabel.AutoSize = $true
-    $logLabel.Font = $labelFont
-    #$logLabel.TabIndex = $selectedTab.TabIndex
-    $scriptRegistry.Controls.Add($logLabel)
-
-    $script:textLogReg = New-Object System.Windows.Forms.TextBox
-    $textLogReg.Location = New-Object System.Drawing.Point(320,45)
-    $textLogReg.Size = New-Object System.Drawing.Size(550,40)
-    $textLogReg.ReadOnly = $true
-    $textLogReg.Font = $textFont
-    $scriptRegistry.Controls.Add($textLogReg)
-
-    # Browse Button
-    $buttonBrowse = New-Object System.Windows.Forms.Button
-    $buttonBrowse.location = New-Object System.Drawing.Point(890,47)
-    $buttonBrowse.Size = $buttonSize
-    $buttonBrowse.Text = "Browse"
-    $buttonBrowse.Font = $buttonFont
-    #$buttonBrowse.TabIndex = $selectedTab.TabIndex
-    $scriptRegistry.Controls.Add($buttonBrowse)
-    $buttonBrowse.Add_Click(
-        {
-            $browser = New-Object System.Windows.Forms.FolderBrowserDialog
-            $browser.ShowDialog()
-            
-            $textLogReg.text = "$($browser.SelectedPath)\registrylog.txt"
-            $script:logLocation = $textLogReg.Text
-
-            if (!(Test-Path $logLocation))
-            {
-                New-Item -Path $browser.SelectedPath -Name registrylog.txt
-            }
-        }
-    )
-}
+. .\beacon.ps1
+. .\registry.ps1
 
 Function New-Form
 {
@@ -120,6 +39,10 @@ Function New-Form
         $labelIPRegistry = New-Object System.Windows.Forms.Label
         $textIPRegistry = New-Object System.Windows.Forms.TextBox
         $buttonIPUpdateRegistry = New-Object System.Windows.Forms.Button
+        $labelSetupBreak = New-Object System.Windows.Forms.Label
+        $labelExecBreak = New-Object System.Windows.Forms.Label
+        $labelRegSetup = New-Object System.Windows.Forms.Label
+        $labelRegExec = New-Object System.Windows.Forms.Label
         $labelUserTarget = New-Object System.Windows.Forms.Label
         $textUserTarget = New-Object System.Windows.Forms.TextBox
         $buttonUserTarget = New-Object System.Windows.Forms.Button
@@ -171,7 +94,7 @@ Function New-Form
     $tabControl.ForeColor = "Black"
     $tabControl.Add_SelectedIndexChanged({
 
-        $script:selectedTab = $tabControl.SelectedTab
+        $selectedTab = $tabControl.SelectedTab
 
     })
 
@@ -191,6 +114,7 @@ Function New-Form
     $welcomePage.Text = "Welcome"
     $tabControl.Controls.Add($welcomePage)
 
+    <#
     $labelInformation0.Location = New-Object System.Drawing.Size(50,50)
     $labelInformation0.Name = "labelInformation"
     $labelInformation0.Text = "Labor of love. This was built in order to have a central place to setup, configure, and run scripts as necessary for exercises."
@@ -211,7 +135,7 @@ Function New-Form
     $labelInformation2.Height = 120
     $labelInformation2.Width = 700
     $welcomePage.Controls.Add($labelInformation2)
-
+    #>
 
     ##########################################################################################
     #
@@ -225,7 +149,44 @@ Function New-Form
     $scriptBeacon.Text = "Beacon Script"
     $tabControl.Controls.Add($scriptBeacon)
 
-    Get-DataBeacon
+    # Log Location label
+    $logLabel = New-Object System.Windows.Forms.Label
+    $logLabel.text = "Log Location"
+    $logLabel.Location = New-Object System.Drawing.Point(200,50)
+    $logLabel.AutoSize = $true
+    $logLabel.Font = $labelFont
+    #$logLabel.TabIndex = $selectedTab.TabIndex
+    $scriptBeacon.Controls.Add($logLabel)
+
+    $textLogBeacon = New-Object System.Windows.Forms.TextBox
+    $textLogBeacon.Location = New-Object System.Drawing.Point(320,45)
+    $textLogBeacon.Size = New-Object System.Drawing.Size(550,40)
+    $textLogBeacon.ReadOnly = $true
+    $textLogBeacon.Font = $textFont
+    $scriptBeacon.Controls.Add($textLogBeacon)
+
+    # Browse Button
+    $buttonBrowse = New-Object System.Windows.Forms.Button
+    $buttonBrowse.location = New-Object System.Drawing.Point(890,47)
+    $buttonBrowse.Size = $buttonSize
+    $buttonBrowse.Text = "Browse"
+    $buttonBrowse.Font = $buttonFont
+    #$buttonBrowse.TabIndex = $selectedTab.TabIndex
+    $scriptBeacon.Controls.Add($buttonBrowse)
+    $buttonBrowse.Add_Click(
+        {
+            $browser = new-object -com SHell.Application
+            $selectedFolder = $browser.BrowseForFolder(0, "Select Folder", 0, "$ENV:USERPROFILE")
+            
+            $textLogBeacon.text = "$($selectedFolder.Self.Path)\beaconlog.txt"
+            $logLocation = $textLogBeacon.Text
+
+            if (!(Test-Path $logLocation))
+            {
+                New-Item -Path $selectedFolder.Self.Path -ItemType File -Name beaconlog.txt
+            }
+        }
+    )
 
     # IP Address Label
     $labelIP.Text = "What is the Desitnation IP?"
@@ -259,7 +220,7 @@ Function New-Form
     $scriptBeacon.Controls.Add($buttonIPUpdate)
     $buttonIPUpdate.Add_Click(
         {
-            $global:ipaddress = $textIP.Text
+            $ipaddress = $textIP.Text
             $messageboxConfirm0 = [System.Windows.Forms.MessageBox]::Show("IP is now $($ipaddress). Is this right?","IP Address","YesNo")
             switch ($messageboxConfirm0)
             {
@@ -300,7 +261,7 @@ Function New-Form
     $scriptBeacon.Controls.Add($buttonPingUpdate)
     $buttonPingUpdate.Add_Click(
         {
-            $global:pings = $textPings.Text
+            $pings = $textPings.Text
             [System.Windows.Forms.MessageBox]::Show("Max tries is set!","Confirmed","OK")
         }
     )
@@ -317,7 +278,45 @@ Function New-Form
     $scriptRegistry.Text = "Registry Script"
     $tabControl.Controls.Add($scriptRegistry)
 
-    Get-DataRegistry
+    # Log Location label
+    $logLabel = New-Object System.Windows.Forms.Label
+    $logLabel.text = "Log Location"
+    $logLabel.Location = New-Object System.Drawing.Point(200,50)
+    $logLabel.AutoSize = $true
+    $logLabel.Font = $labelFont
+    #$logLabel.TabIndex = $selectedTab.TabIndex
+    $scriptRegistry.Controls.Add($logLabel)
+
+    $textLogReg = New-Object System.Windows.Forms.TextBox
+    $textLogReg.Location = New-Object System.Drawing.Point(320,45)
+    $textLogReg.Size = New-Object System.Drawing.Size(550,40)
+    $textLogReg.ReadOnly = $true
+    $textLogReg.Font = $textFont
+    $scriptRegistry.Controls.Add($textLogReg)
+
+    # Browse Button
+    $buttonBrowse = New-Object System.Windows.Forms.Button
+    $buttonBrowse.location = New-Object System.Drawing.Point(890,47)
+    $buttonBrowse.Size = $buttonSize
+    $buttonBrowse.Text = "Browse"
+    $buttonBrowse.Font = $buttonFont
+    #$buttonBrowse.TabIndex = $selectedTab.TabIndex
+    $scriptRegistry.Controls.Add($buttonBrowse)
+    $buttonBrowse.Add_Click(
+        {
+            $browser = new-object -com SHell.Application
+            $selectedFolder = $browser.BrowseForFolder(0, "Select Folder", 0, "$env:USERPROFILE")
+           
+            
+            $textLogReg.text = "$($selectedFolder.Self.Path)\registrylog.txt"
+            $logLocation = $textLogReg.Text
+
+            if (!(Test-Path $logLocation))
+            {
+                New-Item -Path $selectedFolder.Self.Path -ItemType File  -Name registrylog.txt
+            }
+        }
+    )
 
     # Target IP Label
     $labelIPRegistry.Text = "What is the IP of the target device?"
@@ -341,7 +340,7 @@ Function New-Form
     $scriptRegistry.Controls.Add($buttonIPUpdateRegistry)
     $buttonIPUpdateRegistry.Add_Click(
         {
-            $global:ipaddress = $textIP.Text
+            $ipaddress = $textIPRegistry.Text
             $messageboxConfirm0 = [System.Windows.Forms.MessageBox]::Show("IP is now $($ipaddress). Is this right?","IP Address","YesNo")
             switch ($messageboxConfirm0)
             {
@@ -360,62 +359,91 @@ Function New-Form
         }
     )
 
+    # page break
+    $labelSetupBreak.Location = New-Object System.Drawing.Point(0,150)
+    $labelSetupBreak.Width = 1280
+    $labelSetupBreak.AutoSize = $false
+    $labelSetupBreak.Height = 2
+    $labelSetupBreak.BorderStyle = [System.Windows.Forms.BorderStyle]::Fixed3D
+    $scriptRegistry.Controls.Add($labelSetupBreak)
+
+    # Label for defining section for setup
+    $labelRegSetup.Text = "Setup"
+    $labelRegSetup.Location = New-Object System.Drawing.Point(570,155)
+    $labelRegSetup.AutoSize = $True
+    $labelRegSetup.Font = New-Object System.Drawing.Font("Segoe UI",18,[System.Drawing.FontStyle]::Regular)
+    $scriptRegistry.Controls.Add($labelRegSetup)
+
     # Target User label
     $labelUserTarget.Text = "Who is the 'Bad Guy'?"
-    $labelUserTarget.Location = New-Object System.Drawing.Point(280,153)
+    $labelUserTarget.Location = New-Object System.Drawing.Point(280,203)
     $labelUserTarget.AutoSize = $True
     $labelUserTarget.Font = $labelFont
     $scriptRegistry.Controls.Add($labelUserTarget)
 
     # Target User textbox
     $textUserTarget.Text = "example: bad.guy.adm"
-    $textUserTarget.Location = New-Object System.Drawing.Point(460,150)
+    $textUserTarget.Location = New-Object System.Drawing.Point(460,200)
     $textUserTarget.Size = New-Object System.Drawing.Size(250,40)
     $textUserTarget.Font = $textFont
     $scriptRegistry.Controls.Add($textUserTarget)
 
     # Target User button
     $buttonUserTarget.Text = "Set"
-    $buttonUserTarget.Location = New-Object System.Drawing.Point(730,153)
+    $buttonUserTarget.Location = New-Object System.Drawing.Point(730,203)
     $buttonUserTarget.Size = $buttonSize
     $buttonUserTarget.Font = $buttonFont
     $scriptRegistry.Controls.Add($buttonUserTarget)
     $buttonUserTarget.Add_Click(
         {
 
-            $global:userTarget = $textUserTarget.Text
+            $userTarget = $textUserTarget.Text
             [System.Windows.Forms.MessageBox]::Show("$($userTarget) is the bad guy.","Confirmed","OK")
         }
     )
 
     # Edit Root Registry Hive Label
     $labelRootHive.Text = "Change the root registry hive?"
-    $labelRootHive.Location = New-Object System.Drawing.Point(220,203)
+    $labelRootHive.Location = New-Object System.Drawing.Point(220,253)
     $labelRootHive.AutoSize = $True
     $labelRootHive.Font = $labelFont
     $scriptRegistry.Controls.Add($labelRootHive)
 
     # Edit Root Registry Hive textbox
     $textRootHive.Text = "example: McAfeee"
-    $textRootHive.Location = New-Object System.Drawing.Point(460,200)
+    $textRootHive.Location = New-Object System.Drawing.Point(460,250)
     $textRootHive.Size = New-Object System.Drawing.Size(250,40)
     $textRootHive.Font = $textFont
     $scriptRegistry.Controls.Add($textRootHive)
 
     # Edit Root Registry Hive button
     $buttonRootHive.Text = "Set"
-    $buttonRootHive.Location = New-Object System.Drawing.Point(730,203)
+    $buttonRootHive.Location = New-Object System.Drawing.Point(730,253)
     $buttonRootHive.Size = $buttonSize
     $buttonRootHive.Font = $buttonFont
     $scriptRegistry.Controls.Add($buttonRootHive)
     $buttonRootHive.Add_Click(
         {
 
-            $global:rootHive = $textRootHive.Text
+            $rootHive = $textRootHive.Text
             [System.Windows.Forms.MessageBox]::Show("The Root Registry Hive is $($rootHive).","Confirmed","OK")
         }
     )
 
+    # page break
+    $labelExecBreak.Location = New-Object System.Drawing.Point(0,300)
+    $labelExecBreak.Width = 1280
+    $labelExecBreak.AutoSize = $false
+    $labelExecBreak.Height = 2
+    $labelExecBreak.BorderStyle = [System.Windows.Forms.BorderStyle]::Fixed3D
+    $scriptRegistry.Controls.Add($labelExecBreak)
+    
+    # Label for defining section for setup
+    $labelRegExec.Text = "Execution"
+    $labelRegExec.Location = New-Object System.Drawing.Point(555,305)
+    $labelRegExec.AutoSize = $True
+    $labelRegExec.Font = New-Object System.Drawing.Font("Segoe UI",18,[System.Drawing.FontStyle]::Regular)
+    $scriptRegistry.Controls.Add($labelRegExec)
 
     ##########################################################################################
     #
@@ -446,25 +474,25 @@ Function New-Form
 
             If ($selectedTab.TabIndex -eq 1)
             { 
-                Get-Date -DisplayHint Date | Out-File -FilePath $logLocation -Append
-                "#################################################################################################################################" | Out-File -FilePath $logLocation -Append
+                Get-Date -Format F | Out-File -FilePath $logLocation -Append
+                "###########################################################################################" | Out-File -FilePath $logLocation -Append
                 ;"";""| Out-File -FilePath $logLocation -Append
                 "'Bad' IP is: $($ipaddress)" | Out-File -FilePath $logLocation -Append
                 ;""| Out-File -FilePath $logLocation -Append
-                "Script will attemtp to ping $($pings) times." | Out-File -FilePath $logLocation -Append
+                "Script will attempt to ping $($pings) times." | Out-File -FilePath $logLocation -Append
                 ;"";""| Out-File -FilePath $logLocation -Append
-                .\beacon.ps1
+                Run-Beacon
                 
 
             }
             elseif ($selectedTab.TabIndex -eq 2)
             {
 
-                Get-Date -DisplayHint Date | Out-File -FilePath $logLocation -Append
-                "#################################################################################################################################" | Out-File -FilePath $logLocation -Append
+                Get-Date -Format F | Out-File -FilePath $logLocation -Append
+                "###########################################################################################" | Out-File -FilePath $logLocation -Append
                 ;"";""| Out-File -FilePath $logLocation -Append
                 
-                .\Registry\registry.ps1
+                Set-Registry -add -hive $rootHive
 
             }
 
